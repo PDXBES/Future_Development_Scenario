@@ -69,11 +69,11 @@ def main():
 
 
     if n_missing_zones == 0:
-        print "no missing zones were found"
+        print("no missing zones were found")
     else:
-        print str(n_missing_zones) + " rows with missing zones were found"
+        print(str(n_missing_zones) + " rows with missing zones were found")
 
-    print "done"
+    print("done")
 
 
 if __name__ == '__main__':
