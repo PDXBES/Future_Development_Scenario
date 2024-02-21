@@ -13,6 +13,8 @@ import shutil
 # EMGAATS.FdsBliScratch (after being filled from dev cap and formatted) - from in mem probably
 # EMGAATS.FdsBli2050/2070/etc - need to be backed up manually?
 
+#TODO - this all needs to go into a method that can be called from fds_main
+
 new_folder_full_path = utility.fds_archive_full_path_name()
 
 try:
