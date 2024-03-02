@@ -20,7 +20,7 @@ FdsZoneMaxIA = sde_prod + r"\EMGAATS.GIS.FdsZoneMaxIA"
 
 n_missing_zones = 0
 # abuildout_delta_fraction = 0.67 # per Jan 2020 extrapolation calc
-abuildout_delta_fraction = 1 # use if running separately for All BO
+abuildout_delta_fraction = 1 # use if running separately for BO
 
 dict_FdsZoneMaxIA ={}
 
@@ -32,7 +32,7 @@ def main():
 
     arcpy.MakeTableView_management(FdsZoneMaxIA,"FdsZoneMaxIA")
 
-    print "building dictionary"
+    print("building dictionary")
     dict_FdsZoneMaxIA.clear
     with arcpy.da.SearchCursor("FdsZoneMaxIA", ["fds_zone", "max_impervious_percent"]) as cursor:
         for row in cursor:
@@ -46,7 +46,7 @@ def main():
     del row
     del cursor
 
-    print "updating data"
+    print("updating data")
     with arcpy.da.UpdateCursor(targetFC, ["future_area_id","fds_zone","buildout_delta_fraction", "max_impervious_percent"]) as cursor:
         afds_id = 0
         n_missing_zones = 0

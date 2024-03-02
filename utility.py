@@ -6,7 +6,7 @@ import shutil
 
 
 def calc_new_units_per_year(new_units_start_year, new_units_end_year, new_units_count):
-    units_per_year = new_units_count/ (new_units_end_year - new_units_start_year)
+    units_per_year = int(new_units_count)/ (int(new_units_end_year) - int(new_units_start_year))
     return units_per_year
 
 
@@ -16,14 +16,39 @@ def calc_horizon_year_unit_count(new_units_start_year, horizon_year, units_per_y
 
 
 def calc_horizon_year(horizon_in_years):
-    now = datetime.now()
-    now_year = now.year
+    now_year = find_current_year()
     horizon_year = now_year + horizon_in_years
     return horizon_year
 
 
-#full_capacity_units = Development Capacity sum of NETALLOW_C field
-def calc_buildout_delta_fraction(allocation_txt_file, horizon_in_years, dev_cap_source, capacity_field):
+def find_current_year():
+    now = datetime.now()
+    now_year = now.year
+    return now_year
+
+
+def calc_units_at_horizon_year(horizon_in_years, new_units_per_year):
+    horizon_year = calc_horizon_year(horizon_in_years)
+    now_year = find_current_year()
+    year_diff = horizon_year - now_year
+    units_at_horizon_year = year_diff * new_units_per_year
+    return units_at_horizon_year
+
+
+def calc_buildout_year(full_capacity_units, new_units_per_year):
+    now_year = find_current_year()
+    years_to_max_units = int(full_capacity_units/ new_units_per_year)
+    buildout_year = now_year + years_to_max_units
+    return buildout_year
+
+
+def calc_fraction(full_capacity_units, horizon_year_units):
+    fraction = round(horizon_year_units/ full_capacity_units, 2)
+    return fraction
+
+
+#full_capacity_units = Development Capacity sum of NET_ALLOWC field (always verify)
+def calc_buildout_delta_fraction():
     allocation_values = get_txt_file_values(config.metro_allocations)
     start_year = int(allocation_values[0])
     end_year = int(allocation_values[1])
@@ -31,22 +56,21 @@ def calc_buildout_delta_fraction(allocation_txt_file, horizon_in_years, dev_cap_
     horizon_year = calc_horizon_year(config.horizon_in_years)  # using 50 year horizon
     new_units_per_year = calc_new_units_per_year(start_year, end_year, new_units)
     horizon_year_units = calc_horizon_year_unit_count(start_year, horizon_year, new_units_per_year)
-    full_capacity_units = calc_full_capacity_units(config.dev_capacity_copy, 'NETALLOW_C')
-    buildout_delta_fraction = calc_buildout_delta_fraction(full_capacity_units, horizon_year_units)
+    full_capacity_units = calc_full_capacity_units(config.dev_capacity_copy, 'NET_ALLOWC')
+    buildout_delta_fraction = calc_fraction(full_capacity_units, horizon_year_units)
     return buildout_delta_fraction
 
 
 #dev_capacity_fc = config.dev_capacity_fc
-#ield = 'NETALLOW_C'
+#ield = 'NET_ALLOWC'
 def calc_full_capacity_units(dev_capacity_fc, field):
     value_list = []
     with arcpy.da.SearchCursor(dev_capacity_fc, field) as cursor:
         for row in cursor:
-            value_list.append(row[0])
-    full_capacity_units = sum(value_list)
+            if row[0] is not None:
+                value_list.append(row[0])
+    full_capacity_units = round(sum(value_list),2)
     return full_capacity_units
-
-
 
 
 #TODO - create method to test if config.dev_capacity.ZONE (for now, can change)

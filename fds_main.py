@@ -40,10 +40,7 @@ try:
 
         dict_FdsZoneMaxIA = utility.get_field_value_as_dict(config.FdsZoneMaxIA_table, 'fds_zone', 'max_impervious_percent')
 
-        buildout_delta_fraction = utility.calc_buildout_delta_fraction(config.metro_allocations,
-                                                               config.horizon_in_years,
-                                                               dev_capacity_source,
-                                                               'NETALLOW_C')
+        buildout_delta_fraction = utility.calc_buildout_delta_fraction()
 
         with arcpy.da.UpdateCursor(config.FdsBliScratch_copy, ["future_area_id",
                                                                "fds_zone",
@@ -71,8 +68,8 @@ try:
 
 
         # populate additional_area_sqft - calcs from above fields
-        # --- calc shape_area since in memory doesn't automatically have it
-
+        # --- calc shape_area since in memory doesn't automatically have it -- maybe?? VERIFY
+        arcpy.CalculateGeometryAttributes_management(config.FdsBliScratch_copy, )
         utility.calc_additional_area_sqft(config.FdsBliScratch_copy)
 
         # populate infiltration_fraction - based on intersect with SWMM source
