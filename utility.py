@@ -27,6 +27,12 @@ def find_current_year():
     return now_year
 
 
+def find_current_DDMMYYYY():
+    now = datetime.now()
+    DDMMYYYY = str(now.day) + "/" + str(now.month) + "/" + str(now.year)
+    return DDMMYYYY
+
+
 def calc_units_at_horizon_year(horizon_in_years, new_units_per_year):
     horizon_year = calc_horizon_year(horizon_in_years)
     now_year = find_current_year()
@@ -35,10 +41,9 @@ def calc_units_at_horizon_year(horizon_in_years, new_units_per_year):
     return units_at_horizon_year
 
 
-def calc_buildout_year(full_capacity_units, new_units_per_year):
-    now_year = find_current_year()
+def calc_buildout_year(start_year, full_capacity_units, new_units_per_year):
     years_to_max_units = int(full_capacity_units/ new_units_per_year)
-    buildout_year = now_year + years_to_max_units
+    buildout_year = start_year + years_to_max_units
     return buildout_year
 
 
@@ -69,7 +74,7 @@ def calc_full_capacity_units(dev_capacity_fc, field):
         for row in cursor:
             if row[0] is not None:
                 value_list.append(row[0])
-    full_capacity_units = round(sum(value_list),2)
+    full_capacity_units = int(sum(value_list))
     return full_capacity_units
 
 
