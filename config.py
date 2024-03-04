@@ -6,9 +6,10 @@ sde_connections = r"\\besfile1\CCSP\03_WP2_Planning_Support_Tools\03_RRAD\CCSP_D
 EMGAATS_PROD1_sde = "BESDBPROD1.EMGAATS.sde"
 EMGAATS_PROD1_sde_path = os.path.join(sde_connections, EMGAATS_PROD1_sde)
 
-FdsBliScratch_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBliBO"
+FdsBliScratch_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.Scratch"
 FdsZoneMaxIA_table = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsZoneMaxIA"
 FdsBliBO_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBliBO"
+FdsBli2050 = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBli2050"
 # use of FdsBli2050, FdsAllBO, FdsRip2050, FdsRipBO have all been deprecated as of 2024
 EMGAATS_Areas = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.Areas"
 

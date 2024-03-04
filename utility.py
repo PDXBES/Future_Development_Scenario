@@ -116,18 +116,24 @@ def fds_archive_full_path_name():
     return new_folder_full_path
 
 
-def fds_archive_gdb_name():
-    basename = "FDS_archive"
-    #datetime = self.datetime_now()
-    extension = ".gdb"
-    full_name = basename + extension
-    return full_name
+def copy_fc_to_gdb(target_gdb, source_fc):
+    full_fc_path = os.path.join(target_gdb,
+                                os.path.basename(source_fc)
+                                )
+    arcpy.CopyFeatures_management(source_fc, full_fc_path)
 
 
-def fds_gdb_full_path_name(fds_archive_full_path_name):
-    full_name = fds_archive_gdb_name()
-    full_path = os.path.join(fds_archive_full_path_name, full_name)
-    return full_path
+# def fds_archive_gdb_name():
+#     basename = "BPS_inputs"
+#     extension = ".gdb"
+#     full_name = basename + extension
+#     return full_name
+
+
+# def fds_gdb_full_path_name(fds_archive_full_path_name):
+#     full_name = fds_archive_gdb_name()
+#     full_path = os.path.join(fds_archive_full_path_name, full_name)
+#     return full_path
 
 
 def get_txt_file_values(txt_file):

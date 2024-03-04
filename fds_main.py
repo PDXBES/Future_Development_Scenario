@@ -66,7 +66,7 @@ try:
                 row[2] = buildout_delta_fraction
                 row[3] = amax_impervious_percent
                 cursor.updateRow(row)
-                
+
 
         # truncate/ delete rows from Intermediate Fds then append Scratch to that Fds (currently 2050, may want name change)
 
