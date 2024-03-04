@@ -66,31 +66,7 @@ try:
                 row[2] = buildout_delta_fraction
                 row[3] = amax_impervious_percent
                 cursor.updateRow(row)
-
-        # ------------ done with EMGAATS Update button ----------------------------------------------------------------
-
-        # populate destination_node_id, existing_area_sqft? - also done in EMGAATS update button
-
-
-        # populate additional_area_sqft - calcs from above fields
-        # --- calc shape_area since in memory doesn't automatically have it -- maybe?? VERIFY
-        # arcpy.CalculateGeometryAttributes_management(config.FdsBliScratch_copy, )
-        # utility.calc_additional_area_sqft(config.FdsBliScratch_copy)
-        #
-        #
-        # # populate infiltration_fraction - based on intersect with SWMM source
-        # fds_scratch_points = arcpy.management.FeatureToPoint(config.FdsBliScratch_copy, r"in_memory\fds_scratch_points")
-        # sect = arcpy.Intersect_analysis([fds_scratch_points, config.infiltration_areas], r"in_memory\sect", '', '', 'POINT')
-        # utility.get_and_assign_field_value(sect,
-        #                                    'future_area_id', #populated above
-        #                                    'Effectiveness',
-        #                                    config.FdsBliScratch_copy,
-        #                                    'future_area_id',
-        #                                    'Infiltration_fraction')
-
-        # populate modeled_area_sqft - based on additional and infiltration fraction (so goes last)
-
-        # -------------------------------------------------------------------------------------------------------------
+                
 
         # truncate/ delete rows from Intermediate Fds then append Scratch to that Fds (currently 2050, may want name change)
 
