@@ -1,31 +1,37 @@
 import os
 import arcpy
 
+print("Importing config")
+
 sde_connections = r"\\besfile1\CCSP\03_WP2_Planning_Support_Tools\03_RRAD\CCSP_Data_Management_ToolBox\connection_files"
 
 EMGAATS_PROD1_sde = "BESDBPROD1.EMGAATS.sde"
 EMGAATS_PROD1_sde_path = os.path.join(sde_connections, EMGAATS_PROD1_sde)
 
-FdsBliScratch_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.Scratch"
+FdsBliScratch_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBliScratch"
 FdsZoneMaxIA_table = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsZoneMaxIA"
 FdsBliBO_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBliBO"
-FdsBli2050 = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBli2050"
+FdsBli2050_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBli2050"
 # use of FdsBli2050, FdsAllBO, FdsRip2050, FdsRipBO have all been deprecated as of 2024
 EMGAATS_Areas = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.Areas"
 
 archive_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\Fds_archive"
 log_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\logging"
 
-
-horizon_in_years = 50
-
-# placeholder inputs for BPS data
+# BPS data
 BPS_sources_base_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\from_BPS"
+
+# ------ THESE ARE YOUR VARIABLES --------------------------------------------------------------------
+
 current_sources_folder = os.path.join(BPS_sources_base_folder, "data_received_April_2023")
 
 dev_capacity_fc = os.path.join(current_sources_folder, r"BLI_output_230414.gdb\BLI_output_30ratio_230411")
 zoning_max_impa_table = os.path.join(current_sources_folder, r"zoning_max_impa.csv")
 metro_allocations = os.path.join(current_sources_folder, r"metro_allocation.txt")
+
+horizon_in_years = 50
+
+# -----------------------------------------------------------------------------------------------------
 
 infiltration_areas = r"\\besfile1\asm_projects\9ESEN0000008\EMGAATS\FutureBase\gis\spatial\SWMM_Effectiveness_copy_20240220.gdb\SWMM_Regions"
 

@@ -15,23 +15,34 @@
 import arcpy
 import config
 import utility
+import archiving
 
 try:
-
-    #TODO - format zone/maxIA table? needs zone code parsed out, use max bldg if no max impa value, assign hard coded values (eg OS)
-    # the thing is they may give us a different table with a different format each time - leave for now unless we can gaurantee format
-
-    missing_values = utility.get_missing_value_list(config.dev_capacity_copy, config.FdsZoneMaxIA_table) # or point direct to config.zoning_max_impa_table
+    print("Starting FDS data prep")
+    list1 = utility.get_distinct_value_list(config.dev_capacity_copy, 'ZONE')
+    list2 = utility.get_distinct_value_list(config.FdsZoneMaxIA_table, 'fds_zone')
+    missing_values = utility.get_missing_value_list_from_field_comparison(config.dev_capacity_copy, 'ZONE', config.FdsZoneMaxIA_table, 'fds_zone')
     if len(missing_values) == 0:
 
         # run step 1 of archive (copy Scratch, Intermediate and BO Fds, maxZoneIA tables
+        # generate unit projection graph jpg - save in main archive folder
+        print("Starting Initial Archiving")
+        archiving.archive_inputs_and_existing_fds()
+
+        # append formatted maxZoneIA table from csv to table in EMGAATS (after truncating it)
+        # TODO - format zone/maxIA table? needs zone code parsed out, use max bldg if no max impa value, assign hard coded values (eg OS)
+        # TODO - thing is they may give us a different table with a different format each time - leave for now unless we can gaurantee format
 
         # append Dev Cap to Scratch copy - field map ZONE to fds_zone
         dev_cap_zone_field = 'fds_zone'
         scratch_zone_field = 'ZONE' # be careful - field subject to change
         dev_capacity_source = config.dev_capacity_copy
+
+        print("Truncating Scratch fc then appending new Development Capacity to Scratch")
+        # delete all rows from Scratch
+        utility.cleanup(config.FdsBliScratch_fc)
         arcpy.Append_management(inputs=dev_capacity_source,
-                                target=config.FdsBliScratch_copy,
+                                target=config.FdsBliScratch_fc,
                                 schema_type="NO_TEST",
                                 field_mapping='{} "{}" true true false 12 Text 0 0 ,First,#,{},{},-1,-1'.format(dev_cap_zone_field,
                                                                                                                 dev_cap_zone_field,
@@ -40,14 +51,14 @@ try:
                                 ,
                                 )
 
-        # populate future_areas_id, buildout_delta_fraction, max_imp % - get from future_base
-        # --- pull buildout delta fraction from config.metro_allocations + methods
-
+        print("Getting Zone/IA values")
         dict_FdsZoneMaxIA = utility.get_field_value_as_dict(config.FdsZoneMaxIA_table, 'fds_zone', 'max_impervious_percent')
-
+        print("Getting buildout delta fraction")
         buildout_delta_fraction = utility.calc_buildout_delta_fraction()
+        print("Buildout delta fraction for this run is {}".format(str(buildout_delta_fraction)))
 
-        with arcpy.da.UpdateCursor(config.FdsBliScratch_copy, ["future_area_id",
+        print("Populating future_area_id, buildout_delta_fraction and max_impervious_percent fields in Scratch fc")
+        with arcpy.da.UpdateCursor(config.FdsBliScratch_fc, ["future_area_id",
                                                                "fds_zone",
                                                                "buildout_delta_fraction",
                                                                "max_impervious_percent"]) as cursor:
@@ -67,12 +78,20 @@ try:
                 row[3] = amax_impervious_percent
                 cursor.updateRow(row)
 
+        print("Truncating Intermediate fc then appending Scratch")
+        utility.cleanup(config.FdsBli2050_fc)
+        arcpy.Append_management(inputs=config.FdsBliScratch_fc,
+                                target=config.FdsBli2050_fc,
+                                schema_type="NO_TEST")
 
-        # truncate/ delete rows from Intermediate Fds then append Scratch to that Fds (currently 2050, may want name change)
+        print("Truncating BO fc, setting buildout value to 1 then appending Scratch")
+        utility.cleanup(config.FdsBliBO_fc)
+        utility.set_scratch_buildout_to_one()
+        arcpy.Append_management(inputs=config.FdsBliScratch_fc,
+                                target=config.FdsBliBO_fc,
+                                schema_type="NO_TEST")
 
-        # truncate/ delete rows from BO Fds. Set Scracth buildout_delta_fraction to 1, then append Scratch to BO
-
-        # run step 2 and 3 of archive - Dev Cap fc, metro allocations file, Scratch, Intermediate, BO Fds and maxZoneIA tables (all after refresh)
+        print("FDS data prep complete - ready for EMGAATS Update button to update future scenarios")
 
 
     else:

@@ -14,7 +14,7 @@ horizon_year = utility.calc_horizon_year(50)
 new_units_per_year = utility.calc_new_units_per_year(start_year, end_year, new_units)
 buildout_year = utility.calc_buildout_year(start_year, max_units, new_units_per_year)
 
-def graph_projections():
+def graph_projections(output_folder):
     # Data points
     x = np.array([start_year, end_year])
     y = np.array([0, new_units])
@@ -55,7 +55,7 @@ def graph_projections():
 
     # Show the plot
     plt.grid(True)
-    plt.savefig(os.path.join(config.archive_folder, "test.jpg")) # where should it really go?
+    plt.savefig(os.path.join(output_folder, "unit_projection_graph_" + DDMMYYYY.replace('/', '') + ".jpg")) # where should it really go?
     # plt.show() #this only for QC if its being written out to file
 
 graph_projections()

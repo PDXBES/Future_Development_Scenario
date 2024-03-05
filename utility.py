@@ -5,6 +5,8 @@ import config
 import shutil
 
 
+print("Importing utility")
+
 def calc_new_units_per_year(new_units_start_year, new_units_end_year, new_units_count):
     units_per_year = int(new_units_count)/ (int(new_units_end_year) - int(new_units_start_year))
     return units_per_year
@@ -90,18 +92,15 @@ def get_distinct_value_list(input_fc, field):
     return value_set
 
 
-def get_missing_value_list(list1, list2): # finds any values in list1 that are not in list2
+def get_missing_value_list_from_field_comparison(input_fc1, field1, input_fc2, field2): # finds any values in list1 that are not in list2
+    list1 = get_distinct_value_list(input_fc1, field1)
+    list2 = get_distinct_value_list(input_fc2, field2)
+
     missing_list = []
     for value in list1:
         if value not in list2:
             missing_list.append(value)
-    # if len(missing_list) > 0:
-    #     print("there are {} values in list 1 that were not found in list 2".format(len(missing_list)))
-    # else:
-    #     print("all values in list 1 were found in list 2")
     return missing_list
-
-#TODO - add test for max IA value - ensure there is a value for each zone code in BPS list
 
 
 def fds_archive_folder_name():
@@ -117,10 +116,39 @@ def fds_archive_full_path_name():
 
 
 def copy_fc_to_gdb(target_gdb, source_fc):
-    full_fc_path = os.path.join(target_gdb,
-                                os.path.basename(source_fc)
-                                )
+    if ".gdb" in source_fc:
+        name = os.path.basename(source_fc)
+        full_fc_path = os.path.join(target_gdb,
+                                    name
+                                    )
+    elif ".sde" in source_fc:
+        name = os.path.basename(source_fc).split('.')[2]
+        full_fc_path = os.path.join(target_gdb,
+                                    name
+                                    )
     arcpy.CopyFeatures_management(source_fc, full_fc_path)
+
+
+def copy_table_to_gdb(target_gdb, source_fc):
+    if ".gdb" in source_fc:
+        name = os.path.basename(source_fc)
+        full_fc_path = os.path.join(target_gdb,
+                                    name
+                                    )
+    elif ".sde" in source_fc:
+        name = os.path.basename(source_fc).split('.')[2]
+        full_fc_path = os.path.join(target_gdb,
+                                    name
+                                    )
+    arcpy.Copy_management(source_fc, full_fc_path)
+
+
+def copy_object_to_gdb(target_gdb, source_fc):
+    desc = arcpy.Describe(source_fc)
+    if hasattr(desc, 'featureType'): # only feature classes have 'featureType' not tables
+        copy_fc_to_gdb(target_gdb, source_fc)
+    else:
+        copy_table_to_gdb(target_gdb, source_fc)
 
 
 # def fds_archive_gdb_name():
@@ -178,7 +206,7 @@ def cleanup(feature_class):
     try:
         arcpy.TruncateTable_management(feature_class)
     except:
-        print("unable to truncate, using Delete Rows")
+        #print("unable to truncate, using Delete Rows")
         arcpy.DeleteRows_management(feature_class)
 
 
@@ -192,6 +220,12 @@ def calc_additional_area_sqft(target):
             row[0] = (row[1]/100) * row[4] - row[2] * row[3]
             cursor.updateRow(row)
 
+
+def set_scratch_buildout_to_one():
+    with arcpy.da.UpdateCursor(config.FdsBliScratch_fc, 'buildout_delta_fraction') as cursor:
+        for row in cursor:
+            row[0] = 1
+            cursor.updateRow(row)
 
 
 
