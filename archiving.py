@@ -83,7 +83,7 @@ def archive_inputs_and_existing_fds():
 #archive_inputs_and_existing_fds() # for testing - DELETE
 
 
-# only run this method after hitting the EMGAATS Update
+# only run this method after running the EMGAATS Update
 # prob need to tell it which archive folder as param since this will be run asynchronously from initial archive
 def archive_new_fds(archive_folder_path):
 

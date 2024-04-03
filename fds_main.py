@@ -2,15 +2,17 @@
 # conditional - test if spreadsheet zones and dev cap zones are comparable
 # if no, stop and warn (get list of mismatched - maybe even write out to file) - will need to either go to BPS or manually BES fix
 # if yes, continue
-# get empty FdsBLiSCratch table in mem - got it = config.FdsBliScratch_copy
+# get empty FdsBLiSCratch table in mem (config.FdsBliScratch_copy)
 # append Dev cap fc to that table - map field appropriately
-# run pieces in Dave's future_base to update SCratch values
-# truncate (delete all rows) target (2050, rename to 2070?, or is it just the BO now bc that is 2070?) and then append Scratch values to that
+# run pieces in Dave's future_base to update Scratch values (incorporated into fds_main)
+# truncate (delete all rows) from target (Intermediate, BO) and then append Scratch values to that
+# ----- BO gets full buildout value of 1
 # Update Future Areas (EMGAATS toolbar tool) updates additional fields in 2070/BO
-# -----keep this as run manual or incorporate into overall script (or have both)?
-# -----modelers do prob always want to have this bc the model itself changing can create need for update
-# archive all inputs and the outputs (I think just the 2070/ BO now)
+# ----- keep this as run manual or incorporate into overall script (or have both)?
+# ----- modelers do prob always want to have this bc the model itself changing can create need for update
+# archive all inputs and the outputs (Just the Intermediate/ BO now)
 
+# TODO - convert print statements to logging
 
 import arcpy
 import config
@@ -31,7 +33,8 @@ try:
 
         # append formatted maxZoneIA table from csv to table in EMGAATS (after truncating it)
         # TODO - format zone/maxIA table? needs zone code parsed out, use max bldg if no max impa value, assign hard coded values (eg OS)
-        # TODO - thing is they may give us a different table with a different format each time - leave for now unless we can gaurantee format
+        # TODO - thing is they may give us a different table with a different format each time
+        #  - leave as manual format for now unless we can guarantee format
 
         # append Dev Cap to Scratch copy - field map ZONE to fds_zone
         dev_cap_zone_field = 'fds_zone'

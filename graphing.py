@@ -56,6 +56,8 @@ def graph_projections(output_folder):
     # Show the plot
     plt.grid(True)
     plt.savefig(os.path.join(output_folder, "unit_projection_graph_" + DDMMYYYY.replace('/', '') + ".jpg")) # where should it really go?
-    # plt.show() #this only for QC if its being written out to file
+    # plt.show() #this only for QC - not used if its being written out to file
 
-graph_projections()
+
+# for testing - normally this should be commented out
+#graph_projections(config.archive_folder)
