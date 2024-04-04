@@ -117,3 +117,9 @@ def archive_new_fds(archive_folder_path):
         # log_obj.exception(str(sys.exc_info()[0]))
 
         print(str(sys.exc_info()[0]))
+
+
+# TODO - modify this final archive piece so it is not run manually from here.
+#  Forgetting to comment it out when fds_main is run means it runs at the wrong time
+# folder_path = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\Fds_archive\FDS_archive_2024040312"
+# archive_new_fds(folder_path)

@@ -1,11 +1,33 @@
 import arcpy
 from datetime import datetime
 import os
+import sys
 import config
 import shutil
+import logging
 
 
 print("Importing utility")
+
+
+def Logger(file_name):
+    formatter = logging.Formatter(fmt='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
+                                  datefmt='%Y/%m/%d %H:%M:%S')  # %I:%M:%S %p AM|PM format
+    logging.basicConfig(filename='%s.log' % (file_name),
+                        format='%(asctime)s %(module)s,line: %(lineno)d %(levelname)8s | %(message)s',
+                        datefmt='%Y/%m/%d %H:%M:%S', filemode='a', level=logging.INFO)
+    log_obj = logging.getLogger()
+    log_obj.setLevel(logging.DEBUG)
+    # log_obj = logging.getLogger().addHandler(logging.StreamHandler())
+
+    # console printer
+    screen_handler = logging.StreamHandler(stream=sys.stdout)  # stream=sys.stdout is similar to normal print
+    screen_handler.setFormatter(formatter)
+    logging.getLogger().addHandler(screen_handler)
+
+    log_obj.info("Starting log session..")
+    return log_obj
+
 
 def calc_new_units_per_year(new_units_start_year, new_units_end_year, new_units_count):
     units_per_year = int(new_units_count)/ (int(new_units_end_year) - int(new_units_start_year))
@@ -29,10 +51,10 @@ def find_current_year():
     return now_year
 
 
-def find_current_DDMMYYYY():
+def find_current_YYYYMMDD():
     now = datetime.now()
-    DDMMYYYY = str(now.day) + "/" + str(now.month) + "/" + str(now.year)
-    return DDMMYYYY
+    YYYYMMDD = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+    return YYYYMMDD
 
 
 def calc_units_at_horizon_year(horizon_in_years, new_units_per_year):
@@ -105,7 +127,7 @@ def get_missing_value_list_from_field_comparison(input_fc1, field1, input_fc2, f
 
 def fds_archive_folder_name():
     basename = "FDS_archive_"
-    dateandtime = datetime.today().strftime('%Y%m%d%H%M%S')
+    dateandtime = datetime.today().strftime('%Y%m%d%H')
     full_name = basename + dateandtime
     return full_name
 
@@ -149,19 +171,6 @@ def copy_object_to_gdb(target_gdb, source_fc):
         copy_fc_to_gdb(target_gdb, source_fc)
     else:
         copy_table_to_gdb(target_gdb, source_fc)
-
-
-# def fds_archive_gdb_name():
-#     basename = "BPS_inputs"
-#     extension = ".gdb"
-#     full_name = basename + extension
-#     return full_name
-
-
-# def fds_gdb_full_path_name(fds_archive_full_path_name):
-#     full_name = fds_archive_gdb_name()
-#     full_path = os.path.join(fds_archive_full_path_name, full_name)
-#     return full_path
 
 
 def get_txt_file_values(txt_file):

@@ -49,13 +49,13 @@ def graph_projections(output_folder):
     # Add labels and title
     plt.xlabel('Year')
     plt.ylabel('Units')
-    DDMMYYYY = utility.find_current_DDMMYYYY()
-    plt.title('Unit Projections ({})'.format(DDMMYYYY))
+    YYYYMMDD = utility.find_current_YYYYMMDD()
+    plt.title('Unit Projections ({})'.format(YYYYMMDD))
     plt.legend()
 
     # Show the plot
     plt.grid(True)
-    plt.savefig(os.path.join(output_folder, "unit_projection_graph_" + DDMMYYYY.replace('/', '') + ".jpg")) # where should it really go?
+    plt.savefig(os.path.join(output_folder, "unit_projection_graph_" + YYYYMMDD.replace('/', '') + ".jpg")) # where should it really go?
     # plt.show() #this only for QC - not used if its being written out to file
 
 

@@ -16,7 +16,7 @@ FdsBli2050_fc = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.FdsBli2050"
 EMGAATS_Areas = EMGAATS_PROD1_sde_path + r"\EMGAATS.GIS.Areas"
 
 archive_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\Fds_archive"
-log_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\logging"
+log_file = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\logging\FDS_log"
 
 # BPS data
 BPS_sources_base_folder = r"\\besfile1\ccsp\03_WP1_Analysis_Solution_Dev\02_Data_Framework\FutureCondition\from_BPS"
