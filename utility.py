@@ -82,7 +82,7 @@ def calc_buildout_delta_fraction():
     start_year = int(allocation_values[0])
     end_year = int(allocation_values[1])
     new_units = int(allocation_values[2])
-    horizon_year = calc_horizon_year(config.horizon_in_years)  # using 50 year horizon
+    horizon_year = calc_horizon_year(config.horizon_in_years)  # using 50 year horizon as the default
     new_units_per_year = calc_new_units_per_year(start_year, end_year, new_units)
     horizon_year_units = calc_horizon_year_unit_count(start_year, horizon_year, new_units_per_year)
     full_capacity_units = calc_full_capacity_units(config.dev_capacity_copy, 'NET_ALLOWC')

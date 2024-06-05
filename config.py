@@ -35,7 +35,7 @@ dev_capacity_fc = os.path.join(current_sources_folder, r"BLI_output_240328.gdb\B
 zoning_max_impa_table = os.path.join(current_sources_folder, r"zoning_max_impa.csv")
 metro_allocations = os.path.join(current_sources_folder, r"metro_allocation.txt")
 
-horizon_in_years = 50
+horizon_in_years = 50 #default is normally 50
 
 # -----------------------------------------------------------------------------------------------------
 

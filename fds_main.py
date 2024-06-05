@@ -2,8 +2,8 @@
 # conditional - test if spreadsheet zones and dev cap zones are comparable
 # if no, stop and warn (get list of mismatched - maybe even write out to file) - will need to either go to BPS or manually BES fix
 # if yes, continue
-# get empty FdsBLiSCratch table in mem (config.FdsBliScratch_copy)
-# append Dev cap fc to that table - map field appropriately
+# (NOT ACTUALLY DOING THIS IN_MEM) get empty FdsBLiScratch table in mem (config.FdsBliScratch_copy) (NOT ACTUALLY DOING THIS IN_MEM)
+# append Dev cap fc to that table - map fields appropriately
 # run pieces in Dave's future_base to update Scratch values (incorporated into fds_main)
 # truncate (delete all rows) from target (Intermediate, BO) and then append Scratch values to that
 # ----- BO gets full buildout value of 1
@@ -33,6 +33,7 @@ log_obj.info("Archiving to: {}".format(config.archive_folder))
 try:
     log_obj.info("Starting FDS data prep")
     list1 = utility.get_distinct_value_list(config.dev_capacity_copy, 'ZONE')
+    #TODO - this needs to be comparing vs the csv NOT the EMGAATS table
     list2 = utility.get_distinct_value_list(config.FdsZoneMaxIA_table, 'fds_zone')
     missing_values = utility.get_missing_value_list_from_field_comparison(config.dev_capacity_copy, 'ZONE', config.FdsZoneMaxIA_table, 'fds_zone')
     if len(missing_values) == 0:
@@ -44,10 +45,10 @@ try:
 
         # append formatted maxZoneIA table from csv to table in EMGAATS (after truncating it)
         # source csv will still need to be formatted manually prior to run
-        log_obj.info("Truncating FdsZoneMaxIA and then appending records from metro allocation csv")
+        log_obj.info("Truncating FdsZoneMaxIA and then appending records from zoning/ max impa csv")
         utility.cleanup(config.FdsZoneMaxIA_table)
 
-        source_table = config.metro_allocations
+        source_table = config.zoning_max_impa_table
         target_table = config.FdsZoneMaxIA_table
 
         source_zone_field = 'fds_zone'
@@ -58,16 +59,17 @@ try:
 
         arcpy.Append_management(inputs=source_table,
                                 target=target_table,
-                                schema_type="NO_TEST",
-                                field_mapping='{} "{}" true true false 12 Text 0 0 ,First,#,{},{},-1,-1;'
-                                              '{} "{}" true true false 4 Long 0 0, First,  # ,{},{},-1,-1'.format(target_zone_field,
-                                                                                                                  target_zone_field,
-                                                                                                                  source_table,
-                                                                                                                  source_zone_field,
-                                                                                                                  target_impa_field,
-                                                                                                                  target_impa_field,
-                                                                                                                  source_table,
-                                                                                                                  source_impa_field)
+                                schema_type="NO_TEST"
+
+                                # ,field_mapping='{} "{}" true true false 12 Text 0 0 ,First,#,{},{},-1,-1;'
+                                #               '{} "{}" true true false 4 Long 0 0, First,  # ,{},{},-1,-1'.format(target_zone_field,
+                                #                                                                                   target_zone_field,
+                                #                                                                                   source_table,
+                                #                                                                                   source_zone_field,
+                                #                                                                                   target_impa_field,
+                                #                                                                                   target_impa_field,
+                                #                                                                                   source_table,
+                                #                                                                                   source_impa_field)
                                 )
 
 
@@ -102,7 +104,7 @@ try:
                                                                "buildout_delta_fraction",
                                                                "max_impervious_percent"]) as cursor:
             afds_id = 0
-            #n_missing_zones = 0
+            n_missing_zones = 0
             for row in cursor:
                 afds_id = afds_id + 1
                 afdsZone = row[1]
@@ -123,7 +125,7 @@ try:
                                 target=config.FdsBli2050_fc,
                                 schema_type="NO_TEST")
 
-        log_obj.info("Truncating BO fc, setting buildout value to 1 then appending Scratch")
+        log_obj.info("Truncating BO fc, setting Scratch buildout value to 1 then appending Scratch")
         utility.cleanup(config.FdsBliBO_fc)
         utility.set_scratch_buildout_to_one()
         arcpy.Append_management(inputs=config.FdsBliScratch_fc,
@@ -136,7 +138,7 @@ try:
     else:
         arcpy.AddError("No data will be prepared")
         arcpy.AddError("Matched sets of zoning codes are required")
-        arcpy.AddMessage("These entries are in the Development Capacity list but NOT IN the zoning/ IA list: " + str(missing_values))
+        arcpy.AddMessage("These entries are in the Development Capacity feature class but NOT IN the zoning/ IA table: " + str(missing_values))
         arcpy.ExecuteError()
 
 except Exception as e:
